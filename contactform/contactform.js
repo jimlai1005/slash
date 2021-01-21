@@ -1,6 +1,35 @@
 jQuery(document).ready(function($) {
   "use strict";
 
+  //Subscribe
+  $('.subscribe form').submit(function(e) {
+    e.preventDefault();
+      var postdata = $('.subscribe form').serialize();
+      var jsonBody = {};
+      $.ajax({
+          type: 'POST',
+          contentType: 'application/json',
+          url: 'https://kxee399lb7.execute-api.ap-southeast-1.amazonaws.com/stg/subscription',
+          data: '{\"email\":\"' + $('.subscribe-email').val().trim() + '\"}',
+          dataType: 'json',
+          success: function(json) {
+            jsonBody = jQuery.parseJSON(json.body);
+              if(jsonBody.errorCode == 0) {
+                  $('.success-message').hide();
+                  $('.error-message').hide();
+                  $('.error-message').html("Subscribe Successfully!");
+                  $('.error-message').fadeIn();
+              }
+              else {
+                  $('.error-message').hide();
+                  $('.success-message').hide();
+                  $('.subscribe form').hide();
+                  $('.success-message').html(jsonBody.errorMessage);
+                  $('.success-message').fadeIn();
+              }
+          }
+      });
+  });
   //Contact
   $('form.contactForm').submit(function() {
     var f = $(this).find('.form-group'),
